@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Horizon Sandbox</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: #08090b;
+    color: white;
+}
+
+
+/* =========================
+   BACKGROUND
+========================= */
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+}
+
+.bg {
+    position: absolute;
+    inset: 0;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    opacity: 0;
+    transform: scale(1.25);
+
+    transition: opacity 1.5s ease-in-out;
+
+    animation: slowZoom 8s ease-out forwards;
+}
+
+.bg.active {
+    opacity: 1;
+}
+
+@keyframes slowZoom {
+
+    from {
+        transform: scale(1.25);
+    }
+
+    to {
+        transform: scale(1.00);
+    }
+
+}
+
+
+/* Put your images here */
+
+.bg:nth-child(1) {
+    background-image: url("/1.png");
+}
+
+.bg:nth-child(2) {
+    background-image: url("/2.png");
+}
+
+.bg:nth-child(3) {
+    background-image: url("/3.png");
+}
+
+.bg:nth-child(4) {
+    background-image: url("/4.png");
+}
+
+
+/* =========================
+   DARK OVERLAY
+========================= */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.72) 0%,
+            rgba(0, 0, 0, 0.15) 35%,
+            rgba(0, 0, 0, 0.30) 70%,
+            rgba(0, 0, 0, 0.82) 100%
+        );
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    position: absolute;
+
+    top: 30px;
+    left: 35px;
+    right: 35px;
+
+    z-index: 5;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+
+/* =========================
+   STAFF CARD
+========================= */
+
+.staff-card {
+    display: flex;
+    align-items: center;
+
+    min-width: 100px;
+
+    padding: 10px 16px 10px 10px;
+
+    border-radius: 12px;
+
+    background: rgba(10, 11, 14, 0.72);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.25);
+
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+.staff-card.changing {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+
+.staff-avatar {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 9px;
+
+    object-fit: cover;
+
+    margin-right: 12px;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+
+.staff-role {
+    font-size: 9px;
+
+    letter-spacing: 1.8px;
+
+    color: rgba(255, 255, 255, 0.45);
+
+    font-weight: 700;
+
+    margin-bottom: 3px;
+}
+
+
+.staff-name {
+    font-size: 14px;
+    font-weight: 600;
+
+    background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff8a00,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #008cff,
+        #8a2be2,
+        #ff00aa,
+        #ff0000
+    );
+
+    background-size: 300% 100%;
+    background-position: 0% 50%;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    animation: rainbowText 6s linear infinite;
+
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes rainbowText {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 300% 50%;
+    }
+}
+
+
+/* =========================
+   SERVER NAME
+========================= */
+
+.server-name {
+    font-size: 21px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    padding: 13px 18px;
+
+    border-radius: 10px;
+
+    background: rgba(10, 11, 14, 0.60);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.server-name span {
+    color: white;
+}
+
+.server-name b {
+    color: rgba(255, 255, 255, 0.35);
+
+    font-weight: 600;
+}
+
+
+/* =========================
+   CENTER
+========================= */
+
+main {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+}
+
+
+.player-card {
+    width: 330px;
+
+    padding: 35px 35px 32px;
+
+    text-align: center;
+
+    border-radius: 17px;
+
+    background: rgba(8, 9, 12, 0.72);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.40);
+}
+
+
+.welcome {
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+    font-weight: 700;
+
+    color: rgba(255, 255, 255, 0.35);
+}
+
+
+.server-title {
+    margin-top: 5px;
+
+    font-size: 25px;
+
+    letter-spacing: 1px;
+
+    font-weight: 800;
+}
+
+
+.player-divider {
+    width: 35px;
+    height: 1px;
+
+    margin: 20px auto;
+
+    background: rgba(255, 255, 255, 0.18);
+}
+
+
+/* =========================
+   PLAYER
+========================= */
+
+.player-avatar {
+    width: 82px;
+    height: 82px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 2px solid rgba(255, 255, 255, 0.15);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.45);
+
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+}
+
+
+.player-name {
+    margin-top: 13px;
+
+    font-size: 17px;
+
+    font-weight: 650;
+
+    color: white;
+}
+
+
+.player-status {
+    margin-top: 9px;
+
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
+
+    color: rgba(255, 255, 255, 0.38);
+}
+
+
+.status-dot {
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 10px rgba(255, 255, 255, 0.8);
+
+    animation: pulse 1.5s infinite;
+}
+
+
+@keyframes pulse {
+
+    0% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.3;
+    }
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    position: absolute;
+
+    left: 35px;
+    right: 35px;
+    bottom: 30px;
+
+    z-index: 5;
+}
+
+
+.loading-text {
+    margin-bottom: 10px;
+
+    font-size: 10px;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+
+    color: rgba(255, 255, 255, 0.45);
+}
+
+
+.dots {
+    display: inline-block;
+
+    width: 18px;
+
+    overflow: hidden;
+}
+
+
+.progress-container {
+    width: 100%;
+    height: 3px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+
+.progress {
+    width: 0%;
+    height: 100%;
+
+    border-radius: 10px;
+
+    background: white;
+
+    transition:
+        width 0.5s ease;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+    header {
+        top: 18px;
+        left: 18px;
+        right: 18px;
+    }
+
+    .staff-card {
+        min-width: 0;
+    }
+
+    .server-name {
+        font-size: 15px;
+        padding: 11px 13px;
+    }
+
+    footer {
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+    }
+
+    .player-card {
+        width: 290px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+    <!-- Background slideshow -->
+    <div class="background">
+        <div class="bg active"></div>
+        <div class="bg"></div>
+        <div class="bg"></div>
+        <div class="bg"></div>
+    </div>
+
+    <div class="overlay"></div>
+
+    <!-- TOP BAR -->
+    <header>
+
+        <!-- Staff -->
+        <div class="staff-card" id="staffCard">
+
+            <img
+                id="staffAvatar"
+                class="staff-avatar"
+                src="https://avatars.fastly.steamstatic.com/daa43e903f187da4dfc2a29fd1972ecb53b1e844_full.jpg"
+                alt="Staff"
+            >
+
+            <div class="staff-info">
+                <div class="staff-role" id="staffRole">
+                    OWNER
+                </div>
+
+                <div class="staff-name" id="staffName">
+                    Pierce
+                </div>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CENTER -->
+    <main>
+
+        <div class="player-card">
+
+            <div class="welcome">
+                WELCOME TO
+            </div>
+
+            <div class="server-title">
+                HORIZON SANDBOX
+            </div>
+
+            <div class="player-status">
+                <span class="status-dot"></span>
+                CONNECTING TO SERVER
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- BOTTOM -->
+    <footer>
+
+        <div class="loading-text">
+            <span id="loadingText">Loading server</span>
+            <span class="dots" id="dots">...</span>
+        </div>
+
+        <div class="progress-container">
+            <div
+                id="progress"
+                class="progress"
+            ></div>
+        </div>
+
+    </footer>
+
+<script>
+
+/* =========================================================
+   BACKGROUND SLIDESHOW
+========================================================= */
+
+const backgrounds = document.querySelectorAll(".bg");
+
+let currentBackground = 0;
+
+function nextBackground() {
+
+    // Hide current image
+    backgrounds[currentBackground].classList.remove("active");
+
+    currentBackground =
+        (currentBackground + 1) % backgrounds.length;
+
+    const next = backgrounds[currentBackground];
+
+    // Reset the zoom animation
+    next.style.animation = "none";
+
+    // Force browser to recognize the reset
+    void next.offsetWidth;
+
+    // Start zoom animation again
+    next.style.animation = "slowZoom 8s ease-out forwards";
+
+    // Fade it in
+    next.classList.add("active");
+}
+
+
+// Start first image
+const first = backgrounds[0];
+
+first.style.animation = "none";
+void first.offsetWidth;
+first.style.animation = "slowZoom 8s ease-out forwards";
+
+requestAnimationFrame(() => {
+    first.classList.add("active");
+});
+
+
+// Change every 7 seconds
+setInterval(nextBackground, 7000);
+
+
+/* =========================================================
+   STAFF ROTATION
+========================================================= */
+
+/*
+    Replace these with your actual staff.
+
+    avatar should point to an image in:
+
+    assets/staff/
+*/
+
+const staffAvatar =
+    document.getElementById("staffAvatar");
+
+const staffName =
+    document.getElementById("staffName");
+
+const staffRole =
+    document.getElementById("staffRole");
+
+staffAvatar.src = "https://avatars.fastly.steamstatic.com/daa43e903f187da4dfc2a29fd1972ecb53b1e844_full.jpg";
+staffName.textContent = "Pierce";
+staffRole.textContent = "OWNER";
+
+
+/* =========================================================
+   STEAM PLAYER
+========================================================= */
+
+/*
+    GMod should provide the SteamID64 in the loading URL.
+
+    Example:
+
+    https://yourdomain.com/loading/
+        ?steamid64=76561198000000000
+*/
+
+
+function getSteamID() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    return (
+        params.get("steamid64") ||
+        params.get("steamid") ||
+        null
+    );
+}
+
+
+const playerAvatar =
+    document.getElementById("playerAvatar");
+
+const playerName =
+    document.getElementById("playerName");
+
+
+async function loadSteamProfile() {
+
+    const steamID = getSteamID();
+
+    if (!steamID) {
+
+        playerName.textContent = "Connecting...";
+
+        return;
+    }
+
+
+    try {
+
+        /*
+            IMPORTANT:
+
+            /api/steam must be YOUR backend.
+
+            Your backend takes the SteamID64 and asks
+            Steam for the profile information.
+
+            Example response:
+
+            {
+                "name": "PlayerName",
+                "avatar": "https://..."
+            }
+        */
+
+        const response =
+            await fetch(
+                `/api/steam?steamid=${encodeURIComponent(steamID)}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error("Steam request failed");
+        }
+
+
+        const profile =
+            await response.json();
+
+
+        if (profile.name) {
+            playerName.textContent =
+                profile.name;
+        }
+
+
+        if (profile.avatar) {
+
+            playerAvatar.src =
+                profile.avatar;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load Steam profile:",
+            error
+        );
+
+        playerName.textContent =
+            "Connecting...";
+
+    }
+}
+
+
+loadSteamProfile();
+
+
+/* =========================================================
+   ANIMATED DOTS
+========================================================= */
+
+const dots =
+    document.getElementById("dots");
+
+let dotCount = 3;
+
+
+setInterval(() => {
+
+    dotCount++;
+
+    if (dotCount > 3) {
+        dotCount = 1;
+    }
+
+    dots.textContent =
+        ".".repeat(dotCount);
+
+}, 500);
+
+
+/* =========================================================
+   FAKE LOADING PROGRESS
+
+   GMod itself can provide actual loading progress if
+   you hook into the loading-screen Lua events.
+
+   This gives the page something visually smooth
+   in the meantime.
+========================================================= */
+
+const progress =
+    document.getElementById("progress");
+
+let progressValue = 0;
+
+
+const progressTimer =
+    setInterval(() => {
+
+        if (progressValue >= 94) {
+
+            clearInterval(progressTimer);
+
+            return;
+        }
+
+
+        /*
+            Slows down as it approaches the end
+            so it doesn't instantly hit 100%.
+        */
+
+        const remaining =
+            94 - progressValue;
+
+        progressValue +=
+            Math.max(
+                0.2,
+                remaining * 0.035
+            );
+
+
+        progress.style.width =
+            `${progressValue}%`;
+
+    }, 500);
+
+</script>
+
+</body>
+</html>
